@@ -7,19 +7,10 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import ru.kata.spring.boot_security.demo.servise.MyUserDetailService;
-import ru.kata.spring.boot_security.demo.servise.MyUserPrincipal;
-import ru.kata.spring.boot_security.demo.servise.WebSecurity;
-
-import java.util.Collection;
 
 @Configuration
 @EnableWebSecurity
@@ -68,13 +59,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public WebSecurity WebSecurity() {
-        //.antMatchers("/users/{userId}/**").access("@webSecurity.checkUserId(authentication,#userId)")
-        //.logoutSuccessUrl("/login");
-        return new WebSecurity();
     }
 
     @Bean
