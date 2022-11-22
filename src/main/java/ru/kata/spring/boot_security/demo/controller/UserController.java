@@ -75,8 +75,9 @@ public class UserController {
         Role role = new Role();
         role.setRole("ROLE_USER");
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setRole(role);
         userService.save(user);
-        return "redirect:/users";
+        return "redirect:admin/index";
     }
 
     @GetMapping("/admin/{id}/edit")
@@ -91,13 +92,13 @@ public class UserController {
                          @PathVariable("id") long id) {
         if (bindingRequest.hasErrors()) return "admin/edit";
         userService.update(id, user);
-        return "redirect:/users";
+        return "redirect:admin/index";
     }
 
     @DeleteMapping("/admin/{id}")
     public String delete(@PathVariable("id") long id) {
         userService.delete(id);
-        return "redirect:/users";
+        return "redirect:admin/index";
     }
 
     @GetMapping ("/user")
