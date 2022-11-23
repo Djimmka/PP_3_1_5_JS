@@ -69,15 +69,13 @@ public class UserController {
         return "admin/index";
     }
 
-    @PostMapping
+    @PostMapping("/admin")
     public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingRequest) {
         if (bindingRequest.hasErrors()) return "admin/new";
-        Role role = new Role();
-        role.setRole("ROLE_USER");
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        user.setRole(role);
+        user.setRole(roleService.findById(1));
         userService.save(user);
-        return "redirect:admin/index";
+        return "redirect:/admin";
     }
 
     @GetMapping("/admin/{id}/edit")
@@ -91,14 +89,15 @@ public class UserController {
     public String update(@ModelAttribute("user") @Valid User user, BindingResult bindingRequest,
                          @PathVariable("id") long id) {
         if (bindingRequest.hasErrors()) return "admin/edit";
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userService.update(id, user);
-        return "redirect:admin/index";
+        return "redirect:/admin";
     }
 
     @DeleteMapping("/admin/{id}")
     public String delete(@PathVariable("id") long id) {
         userService.delete(id);
-        return "redirect:admin/index";
+        return "redirect:/admin";
     }
 
     @GetMapping ("/user")
