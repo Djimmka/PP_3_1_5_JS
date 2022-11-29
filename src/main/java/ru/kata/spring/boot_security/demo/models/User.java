@@ -9,7 +9,7 @@ import java.util.*;
 
 
 @Entity
-public class User{
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -77,6 +77,16 @@ public class User{
 
     public void setRole(Role role) {
         this.role.add(role);
+    }
+
+    public boolean isAdmin() {
+        final boolean[] i = {false};
+        role.forEach(a -> {
+            if (a.getRole().equals("ROLE_ADMIN")) {
+                i[0] = true;
+            }
+        });
+        return i[0];
     }
 
     public void deleteRole(Role role) {

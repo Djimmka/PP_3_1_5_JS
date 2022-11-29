@@ -1,22 +1,87 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="ru">
+
 <head>
-    <title>Spring Security Example</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bootstrap 3 - Изменение порядка следования адаптивных блоков в макете</title>
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        .col-xs-6 {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 300;
+            color: #fff;
+        }
+
+        .col-xs-6:nth-child(1) {
+            background-color: #673d99;
+        }
+
+        .col-xs-6:nth-child(2) {
+            background-color: #984807;
+        }
+
+        .col-xs-6:nth-child(3) {
+            background-color: #022f5f;
+        }
+
+        .col-xs-6:nth-child(4) {
+            background-color: #020f5f;
+        }
+
+        .col-xs-6:nth-child(5) {
+            background-color: #020f5f;
+        }
+    </style>
 </head>
+
 <body>
-<h1>User, welcome spring boot security page!</h1>
+<div class="container">
+    <h1 class="h3 text-center" style="margin-top: 30px; margin-bottom: 30px;">Пример адаптивного макета, построенного с использованием Bootstrap 3</h1>
+    <div class="lead text-center" style="margin-bottom: 16px;">
+        Текущая контрольная точка:
+        <span class="visible-xs-inline">XS</span>
+        <span class="visible-sm-inline">SM</span>
+        <span class="visible-md-inline">MD</span>
+        <span class="visible-lg-inline">LG</span>
+    </div>
+</div>
+<ul class="nav flex-column">
+    <li class="nav-item">
+        <a class="nav-link active" href="/user">User</a>
+    </li>
+    <li class="nav-item" th:if = "${user.isAdmin()}">
+        <a class="nav-link" href="/admin">Admin</a>
+    </li>
+</ul>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6" style="height: 200px;">
+            <p th:text="${user.getId()}">VALUE</p>
+        </div>
+        <div class="col-xs-6" style="height: 150px;">
+            <p th:text="${user.getUsername()}">VALUE2</p>
+        </div>
+        <div class="col-xs-6" style="height: 150px;">
+            <p th:text="${user.getLastName()}">VALUE3</p>
+        </div>
+        <div class="col-xs-6" style="height: 150px;">
+            <a th:href="@{/logout}">Logout</a>
+        </div>
+        <div th:if = "${user.isAdmin()}" class="col-xs-6" style="height: 150px;">
+            <a th:href="@{/admin}">Admin</a>
+        </div>
 
-<p th:text="${user.getId()}">VALUE</p>
-<p th:text="${user.getUsername()}">VALUE</p>
-<p th:text="${user.getLastName()}">VALUE</p>
+    </div>
+</div>
 
-
-<br/>
-
-<a th:href="@{/logout}">Logout</a>
-
-<br/>
-
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
+
 </html>
