@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-public class Role{
+public class Role implements GrantedAuthority{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -46,5 +46,11 @@ public class Role{
 
     public void deleteUser(User user) {
         this.users.remove(user);
+    }
+
+    @Override
+    public String getAuthority() {
+        String authority = role.substring(5);
+        return authority;
     }
 }

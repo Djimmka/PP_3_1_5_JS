@@ -34,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping("/admin")
-    public String index(Model model) {
-        //userService.gen5Users();
+    public String index(Principal principal,Model model) {
+        model.addAttribute("user", userService.findByName(principal.getName()));
         model.addAttribute("users", userService.findAll());
         return "admin/index";
     }
@@ -88,7 +88,7 @@ public class UserController {
     public String update(@ModelAttribute("user") @Valid User user, BindingResult bindingRequest,
                          @PathVariable("id") long id) {
         if (bindingRequest.hasErrors()) return "admin/edit";
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        //user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userService.update(id, user);
         return "redirect:/admin";
     }
