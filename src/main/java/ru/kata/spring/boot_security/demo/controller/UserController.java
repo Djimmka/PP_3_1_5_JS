@@ -35,19 +35,20 @@ public class UserController {
 
     @GetMapping("/admin")
     public String index(Principal principal,Model model) {
-        model.addAttribute("user", userService.findByName(principal.getName()));
+        model.addAttribute("userAuthorized", userService.findByName(principal.getName()));
         model.addAttribute("users", userService.findAll());
+        model.addAttribute("roles", roleService.findAll());
         return "admin/index";
     }
 
     @GetMapping("/admin/{id}")
     public String show(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userService.findById(id));
+        model.addAttribute("user_get", userService.findById(id));
         return "admin/show";
     }
 
     @GetMapping("/admin/new")
-    public String newUser(@ModelAttribute("user") User user) {
+    public String newUser(@ModelAttribute("user_new") User user) {
         return "admin/new";
     }
 
@@ -70,7 +71,7 @@ public class UserController {
     }
 
     @PostMapping("/admin")
-    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingRequest) {
+    public String create(@ModelAttribute("userEdit") @Valid User user, BindingResult bindingRequest) {
         if (bindingRequest.hasErrors()) return "admin/new";
         user.setRole(roleService.findById(1));
         userService.save(user);
@@ -79,7 +80,7 @@ public class UserController {
 
     @GetMapping("/admin/{id}/edit")
     public String edit(Model model, @PathVariable("id") long id) {
-        model.addAttribute("user", userService.findById(id));
+        model.addAttribute("userr", userService.findById(id));
         return "admin/edit";
     }
 

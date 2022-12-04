@@ -8,10 +8,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository
+//@Repository
 public class DAOUserImp implements DAOUser {
-    @PersistenceContext
-    private EntityManager entityManager;
+//    @PersistenceContext
+//    private EntityManager entityManager;
 
 //    @Autowired
 //    public DAOUserImp(EntityManager entityManager) {
