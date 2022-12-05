@@ -48,7 +48,10 @@ public class UserController {
     }
 
     @GetMapping("/admin/new")
-    public String newUser(@ModelAttribute("user_new") User user) {
+    public String newUser(@ModelAttribute("user_new") User user, Model model, Principal principal) {
+        model.addAttribute("roles", roleService.findAll());
+        model.addAttribute("userAuthorized", userService.findByName(principal.getName()));
+        user.setRole(roleService.findById(1));
         return "admin/new";
     }
 

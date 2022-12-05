@@ -55,7 +55,7 @@
                         <nav>
                             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Users table</a>
-                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" >New user</a>
+                                <a class="nav-item nav-link"  href="/admin/new"  >New user</a>
                             </div>
                         </nav>
                         <div class="tab-content" id="nav-tabContent">
@@ -170,31 +170,7 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                <form th:method="POST" th:action="@{/admin}" th:object="${user_new}">
-                                    <div>
-                                        <label for="name"> Enter name</label>
-                                        <input type="text" th:field="*{username}" id="name"/>
 
-                                        <br/>
-
-                                        <label for="name"> Enter lastname</label>
-                                        <input type="text" th:field="*{lastName}" id="lastName"/>
-
-                                        <br/>
-
-                                        <label for="name"> Enter passport</label>
-                                        <input type="text" th:field="*{password}" id="password"/>
-
-                                        <br/>
-
-                                        <input type="submit" value="Add User"/>
-
-                                        <br/>
-
-                                        <a th:href="@{/logout}">Logout</a>
-
-                                    </div>
-                                </form>
                             </div>
                         </div>
                     </div>
