@@ -18,6 +18,9 @@ import ru.kata.spring.boot_security.demo.servise.UserService;
 import javax.validation.Valid;
 import java.beans.Encoder;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 @Controller
@@ -51,7 +54,12 @@ public class UserController {
     public String newUser(@ModelAttribute("user_new") User user, Model model, Principal principal) {
         model.addAttribute("roles", roleService.findAll());
         model.addAttribute("userAuthorized", userService.findByName(principal.getName()));
-        user.setRole(roleService.findById(1));
+        String[] rolesForUser = new String[roleService.findAll().size()];
+        Arrays.fill(rolesForUser, "false");
+        model.addAttribute("rolesForUser", rolesForUser);
+        ArrayList<String> rolesChecked = new ArrayList<>();
+        roleService.findAll().forEach(a-> rolesChecked.add("false"));
+        //user.setRole(roleService.findById(1));
         return "admin/new";
     }
 
@@ -74,9 +82,16 @@ public class UserController {
     }
 
     @PostMapping("/admin")
-    public String create(@ModelAttribute("userEdit") @Valid User user, BindingResult bindingRequest) {
+    public String create(@ModelAttribute("user_new") @Valid User user, BindingResult bindingRequest, @ModelAttribute("rolesChecked") ArrayList<String> rolesChecked) {//@ModelAttribute("rolesForUser")String[] rolesForUser
         if (bindingRequest.hasErrors()) return "admin/new";
-        user.setRole(roleService.findById(1));
+        System.out.println(rolesChecked.size());
+        for (int i = 1; i <= rolesChecked.size(); i++) {
+            System.out.println(i);
+            if (rolesChecked.get(i - 1).equals("true")) {
+                user.setRole(roleService.findById(i));
+                System.out.println(roleService.findById(i).getAuthority());
+            }
+        }
         userService.save(user);
         return "redirect:/admin";
     }

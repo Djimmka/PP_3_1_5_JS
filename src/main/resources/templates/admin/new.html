@@ -75,10 +75,10 @@
                                         <input type="text" th:field="${user_new.password}" id="password"/>
                                         <br/>
                                         <label for="name"> Select roles</label>
-                                        <div th:each="role :${roles}">
+                                        <div th:each="role :${roles}" >
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" th:field="${role}" id="defaultCheck1">
-                                                <label class="form-check-label" for="defaultCheck1">
+                                                <input class="form-check-input" type="checkbox" th:value="${rolesChecked.get(role.getId()-1)}" th:id="'defaultCheck'+${role.getId()}" >
+                                                <label class="form-check-label" th:text="${role.getAuthority()}" th:for="'defaultCheck'+${role.getId()}">
                                                     Default checkbox
                                                 </label>
                                             </div>
