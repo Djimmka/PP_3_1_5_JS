@@ -30,7 +30,7 @@ public class RoleServiceImp implements RoleService {
         return role.getAuthority();
     }
 
-    public Role findById(int id) {
+    public Role findById(long id) {
         Optional<Role> role = roleRepository.findById(id);
         return role.orElse(null);
     }
@@ -41,13 +41,13 @@ public class RoleServiceImp implements RoleService {
     }
 
     @Transactional
-    public void update(int id, Role updRole) {
+    public void update(long id, Role updRole) {
         updRole.setId(id);
         roleRepository.save(updRole);
     }
 
     @Transactional
-    public void delete(int id) {
+    public void delete(long id) {
         roleRepository.deleteById(id);
     }
 

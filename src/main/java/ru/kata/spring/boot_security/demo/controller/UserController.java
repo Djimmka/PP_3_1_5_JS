@@ -2,10 +2,7 @@ package ru.kata.spring.boot_security.demo.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,11 +13,10 @@ import ru.kata.spring.boot_security.demo.servise.RoleService;
 import ru.kata.spring.boot_security.demo.servise.UserService;
 
 import javax.validation.Valid;
-import java.beans.Encoder;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
 
 
 @Controller
@@ -53,12 +49,20 @@ public class UserController {
     @GetMapping("/admin/new")
     public String newUser(@ModelAttribute("user_new") User user, Model model, Principal principal) {
         model.addAttribute("roles", roleService.findAll());
+        Role user_role = roleService.findAll().get(0);
+        Role admin_role = roleService.findAll().get(1);
+        model.addAttribute("admin_role", admin_role);
+        model.addAttribute("user_role", user_role);
         model.addAttribute("userAuthorized", userService.findByName(principal.getName()));
         String[] rolesForUser = new String[roleService.findAll().size()];
         Arrays.fill(rolesForUser, "false");
         model.addAttribute("rolesForUser", rolesForUser);
         ArrayList<String> rolesChecked = new ArrayList<>();
         roleService.findAll().forEach(a-> rolesChecked.add("false"));
+        String isAdmin = null;
+        String isUser = null;
+        model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("isUser", isUser);
         //user.setRole(roleService.findById(1));
         return "admin/new";
     }
@@ -82,16 +86,21 @@ public class UserController {
     }
 
     @PostMapping("/admin")
-    public String create(@ModelAttribute("user_new") @Valid User user, BindingResult bindingRequest, @ModelAttribute("rolesChecked") ArrayList<String> rolesChecked) {//@ModelAttribute("rolesForUser")String[] rolesForUser
+    public String create(@ModelAttribute("user_new") @Valid User user, BindingResult bindingRequest) {//@ModelAttribute("rolesForUser")String[] rolesForUser, @ModelAttribute("rolesChecked") ArrayList<String> rolesChecked
+//        ,
+//        @RequestParam("isAdmin") String isAdmin,@RequestParam("isUser") String isUser
+
         if (bindingRequest.hasErrors()) return "admin/new";
-        System.out.println(rolesChecked.size());
-        for (int i = 1; i <= rolesChecked.size(); i++) {
-            System.out.println(i);
-            if (rolesChecked.get(i - 1).equals("true")) {
-                user.setRole(roleService.findById(i));
-                System.out.println(roleService.findById(i).getAuthority());
-            }
-        }
+//        System.out.println(rolesChecked.size());
+//        for (int i = 1; i <= rolesChecked.size(); i++) {
+//            System.out.println(i);
+//            if (rolesChecked.get(i - 1).equals("true")) {
+//                user.setRole(roleService.findById(i));
+//                System.out.println(roleService.findById(i).getAuthority());
+//            }
+//        }
+//        if (isUser.equals("on")) user.setRole(roleService.findById(1));
+//        if (isAdmin.equals("on")) user.setRole(roleService.findById(2));
         userService.save(user);
         return "redirect:/admin";
     }
