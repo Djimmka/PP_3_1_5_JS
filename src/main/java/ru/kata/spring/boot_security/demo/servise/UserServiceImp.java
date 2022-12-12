@@ -4,7 +4,6 @@ package ru.kata.spring.boot_security.demo.servise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.UsersRepository;
 
@@ -51,14 +50,6 @@ public class UserServiceImp implements UserService {
     @Transactional
     public void delete(long id) {
         usersRepository.deleteById(id);
-    }
-
-    @Transactional
-    public void gen5Users(Role role) {
-        for (int i = 1; i < 6; i++) {
-            User user = new User(String.valueOf(2220 + i), "name_" + i, "lastName_" + i, role);
-            update((long) i, user);
-        }
     }
 
 }

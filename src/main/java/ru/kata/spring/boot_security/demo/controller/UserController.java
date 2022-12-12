@@ -15,9 +15,6 @@ import ru.kata.spring.boot_security.demo.servise.UserService;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 
 
 @Controller
@@ -60,24 +57,6 @@ public class UserController {
         return "admin/new";
     }
 
-    @GetMapping("/admin/gen5")
-    public String gen5(Model model) {
-        Role role = new Role();
-        role.setRole("ROLE_USER");
-        roleService.update(1, role);
-        userService.gen5Users(role);
-        return "admin/index";
-    }
-
-    @GetMapping("/admin/gen5mod")
-    public String gen5mod(Model model) {
-        Role role = new Role();
-        role.setRole("USER");
-        roleService.update(1, role);
-        userService.gen5Users(role);
-        return "admin/index";
-    }
-
     @PostMapping("/admin")
     public String create(@ModelAttribute("user_new") @Valid User user, BindingResult bindingRequest
             , @ModelAttribute("MyRolesCheck") MyRolesCheck myRolesCheck) {
@@ -102,7 +81,7 @@ public class UserController {
     @PatchMapping("/admin/{id}")
     public String update(@ModelAttribute("userr") @Valid User user, BindingResult bindingRequest,
                          @PathVariable("id") long id, @ModelAttribute("MyRolesCheck") MyRolesCheck myRolesCheck) {
-        if (bindingRequest.hasErrors()) return "admin/edit";
+        if (bindingRequest.hasErrors()) return null;
         if (myRolesCheck.getUserState()) user.setRole(roleService.findById(1));
         if (myRolesCheck.getAdminState()) user.setRole(roleService.findById(2));
         userService.update(id, user);

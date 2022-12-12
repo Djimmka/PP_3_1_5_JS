@@ -1,8 +1,6 @@
 package ru.kata.spring.boot_security.demo.models;
 
-import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -50,7 +48,6 @@ public class Role implements GrantedAuthority{
 
     @Override
     public String getAuthority() {
-        String authority = role.substring(5);
-        return authority;
+        return role.substring(5);
     }
 }
