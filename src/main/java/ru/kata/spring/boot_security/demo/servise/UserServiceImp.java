@@ -33,7 +33,7 @@ public class UserServiceImp implements UserService {
     }
 
     public User findByName(String name) {
-        Optional<User> user =  usersRepository.findAll().stream().filter(s -> Objects.equals(s.getUsername(), name)).findFirst();
+        Optional<User> user = usersRepository.findAll().stream().filter(s -> Objects.equals(s.getUsername(), name)).findFirst();
         return user.orElse(null);
     }
 

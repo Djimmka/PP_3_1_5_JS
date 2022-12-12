@@ -7,8 +7,11 @@ import java.util.List;
 
 public interface RoleService {
     public Role findById(long id);
+
     public void save(Role role);
+
     public void update(long id, Role updRole);
+
     public void delete(long id);
 
     public List<Role> findAll();

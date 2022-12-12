@@ -22,6 +22,7 @@ public class MyUserDetailService implements UserDetailsService {
 
 
     private final UsersRepository usersRepository;
+
     @Autowired
     public MyUserDetailService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
@@ -46,6 +47,6 @@ public class MyUserDetailService implements UserDetailsService {
                 .map(r -> new SimpleGrantedAuthority(r.getRole()))
                 .collect(Collectors.toList());
         lst.add(new SimpleGrantedAuthority(String.valueOf(user.getId())));
-        return  lst;
+        return lst;
     }
 }

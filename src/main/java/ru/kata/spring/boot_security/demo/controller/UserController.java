@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.servise.MyRolesCheck;
 import ru.kata.spring.boot_security.demo.servise.RoleService;
 import ru.kata.spring.boot_security.demo.servise.UserService;
 
@@ -33,10 +34,11 @@ public class UserController {
     }
 
     @GetMapping("/admin")
-    public String index(Principal principal,Model model) {
+    public String index(Principal principal, Model model) {
         model.addAttribute("userAuthorized", userService.findByName(principal.getName()));
         model.addAttribute("users", userService.findAll());
         model.addAttribute("roles", roleService.findAll());
+        model.addAttribute("MyRolesCheck", new MyRolesCheck());
         return "admin/index";
     }
 
@@ -54,16 +56,7 @@ public class UserController {
         model.addAttribute("admin_role", admin_role);
         model.addAttribute("user_role", user_role);
         model.addAttribute("userAuthorized", userService.findByName(principal.getName()));
-        String[] rolesForUser = new String[roleService.findAll().size()];
-        Arrays.fill(rolesForUser, "false");
-        model.addAttribute("rolesForUser", rolesForUser);
-        ArrayList<String> rolesChecked = new ArrayList<>();
-        roleService.findAll().forEach(a-> rolesChecked.add("false"));
-        String isAdmin = null;
-        String isUser = null;
-        model.addAttribute("isAdmin", isAdmin);
-        model.addAttribute("isUser", isUser);
-        //user.setRole(roleService.findById(1));
+        model.addAttribute("MyRolesCheck", new MyRolesCheck());
         return "admin/new";
     }
 
@@ -71,7 +64,7 @@ public class UserController {
     public String gen5(Model model) {
         Role role = new Role();
         role.setRole("ROLE_USER");
-        roleService.update(1,role);
+        roleService.update(1, role);
         userService.gen5Users(role);
         return "admin/index";
     }
@@ -80,27 +73,17 @@ public class UserController {
     public String gen5mod(Model model) {
         Role role = new Role();
         role.setRole("USER");
-        roleService.update(1,role);
+        roleService.update(1, role);
         userService.gen5Users(role);
         return "admin/index";
     }
 
     @PostMapping("/admin")
-    public String create(@ModelAttribute("user_new") @Valid User user, BindingResult bindingRequest) {//@ModelAttribute("rolesForUser")String[] rolesForUser, @ModelAttribute("rolesChecked") ArrayList<String> rolesChecked
-//        ,
-//        @RequestParam("isAdmin") String isAdmin,@RequestParam("isUser") String isUser
-
+    public String create(@ModelAttribute("user_new") @Valid User user, BindingResult bindingRequest
+            , @ModelAttribute("MyRolesCheck") MyRolesCheck myRolesCheck) {
         if (bindingRequest.hasErrors()) return "admin/new";
-//        System.out.println(rolesChecked.size());
-//        for (int i = 1; i <= rolesChecked.size(); i++) {
-//            System.out.println(i);
-//            if (rolesChecked.get(i - 1).equals("true")) {
-//                user.setRole(roleService.findById(i));
-//                System.out.println(roleService.findById(i).getAuthority());
-//            }
-//        }
-//        if (isUser.equals("on")) user.setRole(roleService.findById(1));
-//        if (isAdmin.equals("on")) user.setRole(roleService.findById(2));
+        if (myRolesCheck.getUserState()) user.setRole(roleService.findById(1));
+        if (myRolesCheck.getAdminState()) user.setRole(roleService.findById(2));
         userService.save(user);
         return "redirect:/admin";
     }
@@ -108,15 +91,20 @@ public class UserController {
     @GetMapping("/admin/{id}/edit")
     public String edit(Model model, @PathVariable("id") long id) {
         model.addAttribute("userr", userService.findById(id));
+        MyRolesCheck myRolesCheck = new MyRolesCheck();
+        if (userService.findById(id).getRole().contains(roleService.findById(1))) myRolesCheck.setUserState(true);
+        if (userService.findById(id).getRole().contains(roleService.findById(2))) myRolesCheck.setAdminState(true);
+        model.addAttribute("MyRolesCheck", myRolesCheck);
         return "admin/edit";
     }
 
 
     @PatchMapping("/admin/{id}")
-    public String update(@ModelAttribute("user") @Valid User user, BindingResult bindingRequest,
-                         @PathVariable("id") long id) {
+    public String update(@ModelAttribute("userr") @Valid User user, BindingResult bindingRequest,
+                         @PathVariable("id") long id, @ModelAttribute("MyRolesCheck") MyRolesCheck myRolesCheck) {
         if (bindingRequest.hasErrors()) return "admin/edit";
-        //user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        if (myRolesCheck.getUserState()) user.setRole(roleService.findById(1));
+        if (myRolesCheck.getAdminState()) user.setRole(roleService.findById(2));
         userService.update(id, user);
         return "redirect:/admin";
     }
@@ -127,8 +115,8 @@ public class UserController {
         return "redirect:/admin";
     }
 
-    @GetMapping ("/user")
-    public String myPage (Principal principal, Model model) {
+    @GetMapping("/user")
+    public String myPage(Principal principal, Model model) {
         model.addAttribute("user", userService.findByName(principal.getName()));
         model.addAttribute("simpleGrantedAuthority", new SimpleGrantedAuthority("ADMIN"));
         return "user";
