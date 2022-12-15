@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.UsersRepository;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,8 +33,12 @@ public class UserServiceImp implements UserService {
     }
 
     public User findByName(String name) {
-        Optional<User> user = usersRepository.findAll().stream().filter(s -> Objects.equals(s.getUsername(), name)).findFirst();
-        return user.orElse(null);
+        try {
+            User user = usersRepository.findByUsername(name);
+            return user;
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     @Transactional
