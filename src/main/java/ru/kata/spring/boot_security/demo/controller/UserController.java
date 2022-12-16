@@ -30,74 +30,10 @@ public class UserController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/admin")
-    public String index(Principal principal, Model model) {
-        model.addAttribute("userAuthorized", userService.findByName(principal.getName()));
-        model.addAttribute("users", userService.findAll());
-        model.addAttribute("roles", roleService.findAll());
-        model.addAttribute("MyRolesCheck", new MyRolesCheck());
-        return "admin/index";
-    }
-
-    @GetMapping("/admin/{id}")
-    public String show(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user_get", userService.findById(id));
-        return "admin/show";
-    }
-
-    @GetMapping("/admin/new")
-    public String newUser(@ModelAttribute("user_new") User user, Model model, Principal principal) {
-        model.addAttribute("roles", roleService.findAll());
-        Role user_role = roleService.findAll().get(0);
-        Role admin_role = roleService.findAll().get(1);
-        model.addAttribute("admin_role", admin_role);
-        model.addAttribute("user_role", user_role);
-        model.addAttribute("userAuthorized", userService.findByName(principal.getName()));
-        model.addAttribute("MyRolesCheck", new MyRolesCheck());
-        return "admin/new";
-    }
-
-    @PostMapping("/admin")
-    public String create(@ModelAttribute("user_new") @Valid User user, BindingResult bindingRequest
-            , @ModelAttribute("MyRolesCheck") MyRolesCheck myRolesCheck) {
-        if (bindingRequest.hasErrors()) return "admin/new";
-        if (myRolesCheck.getUserState()) user.setRole(roleService.findById(1));
-        if (myRolesCheck.getAdminState()) user.setRole(roleService.findById(2));
-        userService.save(user);
-        return "redirect:/admin";
-    }
-
-    @GetMapping("/admin/{id}/edit")
-    public String edit(Model model, @PathVariable("id") long id) {
-        model.addAttribute("userr", userService.findById(id));
-        MyRolesCheck myRolesCheck = new MyRolesCheck();
-        if (userService.findById(id).getRole().contains(roleService.findById(1))) myRolesCheck.setUserState(true);
-        if (userService.findById(id).getRole().contains(roleService.findById(2))) myRolesCheck.setAdminState(true);
-        model.addAttribute("MyRolesCheck", myRolesCheck);
-        return "admin/edit";
-    }
-
-
-    @PatchMapping("/admin/{id}")
-    public String update(@ModelAttribute("userr") @Valid User user, BindingResult bindingRequest,
-                         @PathVariable("id") long id, @ModelAttribute("MyRolesCheck") MyRolesCheck myRolesCheck) {
-        if (bindingRequest.hasErrors()) return null;
-        if (myRolesCheck.getUserState()) user.setRole(roleService.findById(1));
-        if (myRolesCheck.getAdminState()) user.setRole(roleService.findById(2));
-        userService.update(id, user);
-        return "redirect:/admin";
-    }
-
-    @DeleteMapping("/admin/{id}")
-    public String delete(@PathVariable("id") long id) {
-        userService.delete(id);
-        return "redirect:/admin";
-    }
 
     @GetMapping("/user")
     public String myPage(Principal principal, Model model) {
         model.addAttribute("user", userService.findByName(principal.getName()));
-        model.addAttribute("simpleGrantedAuthority", new SimpleGrantedAuthority("ADMIN"));
         return "user";
     }
 

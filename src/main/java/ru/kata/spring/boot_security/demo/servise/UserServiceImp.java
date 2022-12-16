@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
 public class UserServiceImp implements UserService {
 
     private final UsersRepository usersRepository;
@@ -23,15 +22,18 @@ public class UserServiceImp implements UserService {
         this.usersRepository = usersRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<User> findAll() {
         return usersRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public User findById(long id) {
         Optional<User> user = usersRepository.findById(id);
         return user.orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public User findByName(String name) {
         try {
             User user = usersRepository.findByUsername(name);
