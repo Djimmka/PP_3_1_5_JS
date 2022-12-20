@@ -37,4 +37,9 @@ public class UserController {
         return "user";
     }
 
+    @GetMapping("/RESTtest")
+    public String testREST() {
+        return "RESTtest";
+    }
+
 }
