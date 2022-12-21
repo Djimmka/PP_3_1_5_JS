@@ -93,7 +93,7 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 <script type="module">
-    async function start() {
+    async function userDataGet() {
         let url = 'http://localhost:8081/api/user';
         let response = await fetch(url);
         let user;
@@ -104,16 +104,30 @@
             $("#userId").text(user.id);
             $("#userUsername").text(user.username);
             $("#userPassword").text(user.password);
-            $("#userRoles").text(user.authorities);
+            if (user.authorities.length>1) {
+                $("#userRoles").text(user.authorities[0].authority + " " + user.authorities[1].authority);
+                $("#userAuthorities").text(user.authorities[0].authority + " " + user.authorities[1].authority);
+                $("#navForAdmin").show();
+            } else {
+                $("#userRoles").text(user.authorities[0].authority);
+                $("#userAuthorities").text(user.authorities[0].authority);
+                $("#navForAdmin").hide();
+            }
             console.log(user.username);
             console.log($("#username").text());
-
-
         } else {
             alert("Ошибка HTTP: " + response.status);
         }
     }
-    start();
+    userDataGet();
+    async function getSelectedUserData(id){
+        let url = 'http://localhost:8081/api/user/'+id;
+        let response = await fetch(url);
+        let user;
+        if (response.ok) {
+            user = await response.json();
+    }
+
 </script>
 </body>
 
