@@ -66,6 +66,8 @@
                         <th>lastname</th>
                         <th>pass</th>
                         <th>roles</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -75,11 +77,15 @@
                         <th id="userLastname">lastname</th>
                         <th id="userPassword">pass</th>
                         <th id="userRoles">role</th>
+                        <th><button type="button" class="btn btn-info" data-toggle="modal">Edit</button></th>
+                        <th><button type="button" class="btn btn-danger" data-toggle="modal">Delete</button></th>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+        <button id="but_test1">click</button>
+        <button id="but_test2">click</button>
     </div>
 </div>
 
@@ -113,19 +119,29 @@
                 $("#userAuthorities").text(user.authorities[0].authority);
                 $("#navForAdmin").hide();
             }
-            console.log(user.username);
-            console.log($("#username").text());
         } else {
             alert("Ошибка HTTP: " + response.status);
         }
     }
     userDataGet();
+    let id = 1;
     async function getSelectedUserData(id){
+        console.log(id);
         let url = 'http://localhost:8081/api/user/'+id;
         let response = await fetch(url);
         let user;
         if (response.ok) {
             user = await response.json();
+            $("#title").text(user.username);
+        }
+    }
+    let i=1;
+    while (i<3){
+        let j = '#but_test'+i;
+        $('j').click(function (){
+            getSelectedUserData(i);
+        })
+        i++;
     }
 
 </script>
