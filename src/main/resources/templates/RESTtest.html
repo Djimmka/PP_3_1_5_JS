@@ -5,10 +5,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 
-    <title id="title" >Value</title>
+    <title id="title">Value</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -26,7 +27,7 @@
                 Username </h1>
         </div>
         <div class="col-md-2">
-            <h1 id="userAuthorities" class="h2 text-left"  style="margin-top: 10px; margin-bottom: 10px;">
+            <h1 id="userAuthorities" class="h2 text-left" style="margin-top: 10px; margin-bottom: 10px;">
                 Authorities</h1>
         </div>
         <div class="col-sm-6"></div>
@@ -42,52 +43,259 @@
     <div class="row">
         <div class="col-md-2 d-none d-md-block bg-light sidebar">
             <ul class="nav flex-column nav-pills">
-                <li class="nav-item">
-                    <a class="nav-link" href="/user">User</a>
-                </li>
                 <li class="nav-item" id="navForAdmin">
-                    <a class="nav-link" href="/admin">Admin</a>
+                    <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin-pan" role="tab"
+                       aria-controls="admin-pan" aria-selected="false">Admin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/RESTtest">REST</a>
+                    <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user-pan" role="tab"
+                       aria-controls="user-pan" aria-selected="true">User</a>
                 </li>
             </ul>
         </div>
         <div class="col-md-10">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">User information</h1>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>name</th>
-                        <th>lastname</th>
-                        <th>pass</th>
-                        <th>roles</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th id="userId">id</th>
-                        <th id="userUsername">name</th>
-                        <th id="userLastname">lastname</th>
-                        <th id="userPassword">pass</th>
-                        <th id="userRoles">role</th>
-                        <th><button type="button" class="btn btn-info" data-toggle="modal">Edit</button></th>
-                        <th><button type="button" class="btn btn-danger" data-toggle="modal">Delete</button></th>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="user-pan" role="tabpanel" aria-labelledby="user-tab">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">User information</h1>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>name</th>
+                                <th>lastname</th>
+                                <th>pass</th>
+                                <th>roles</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th id="userId">id</th>
+                                <th id="userUsername">name</th>
+                                <th id="userLastname">lastname</th>
+                                <th id="userPassword">pass</th>
+                                <th id="userRoles">role</th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="admin-pan" role="tabpanel" aria-labelledby="admin-tab">
+                    <div class="col-md-10">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab"
+                                               href="#nav-home"
+                                               role="tab" aria-controls="nav-home" aria-selected="true">Users table</a>
+                                            <a class="nav-item nav-link" id="nav-add-tab" data-toggle="tab"
+                                               href="#nav-add"
+                                               role="tab" aria-controls="nav-home" aria-selected="true">New user</a>
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content" id="nav-tabContent">
+                                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                                             aria-labelledby="nav-home-tab">
+                                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                                                <h1 class="h2">User information</h1>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-sm" id="admin-users-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>id</th>
+                                                        <th>name</th>
+                                                        <th>lastname</th>
+                                                        <th>pass</th>
+                                                        <th>roles</th>
+                                                        <th>edits</th>
+                                                        <th>deletes</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="nav-add" role="tabpanel"
+                                             aria-labelledby="nav-profile-tab">
+                                            <form>
+                                                <div>
+                                                    <label for="name"> Enter name</label>
+                                                    <input type="text" id="name"/>
+                                                    <br/>
+                                                    <label for="lastName"> Enter lastname</label>
+                                                    <input type="text" id="lastName"/>
+                                                    <br/>
+                                                    <label for="password"> Enter passport</label>
+                                                    <input type="text" id="password"/>
+                                                    <br/>
+                                                    <label for="name"> Select roles</label>
+                                                    <div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                   id="defaultCheck1">
+                                                            <label class="form-check-label">
+                                                                Default checkbox user
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox">
+                                                            <label class="form-check-label">
+                                                                Default checkbox admin
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <input type="submit" value="Add User"/>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
         </div>
-        <button id="but_test1">click</button>
-        <button id="but_test2">click</button>
     </div>
 </div>
+</div>
+</div>
+
+<!----MODAL DELETE---->
+<div class="modal fade" id="deleteModal"
+     tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle2">Delete
+                    user data</h5>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="modal-body">
+                    <div class="modal-body">
+                        You are about to delete:
+                        <br/>
+                        <div id="deleteId">id</div>
+                        <br/>
+                        <div id="deleteUsername">username</div>
+                        <br/>
+                        <div id="deleteLastNameUsername">lastname</div>
+                        <br/>
+                        <div id="deletePassword">password</div>
+                        <br/>
+                        <div id="deleteAuthorities">authorities</div>
+
+                        <form action="#">
+                            <input type="text" hidden="true">
+                        </form>
+                    </div>
+                </div>
+
+                <br/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Close
+                </button>
+                <form>
+                    <button id="delete-submit" type="submit" class="btn btn-danger">
+                        Remove
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-----MODAL EDIT------>
+<div class="modal fade" id="editModal"
+     tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        Edit user data</h5>
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div>
+                        <div>
+                            <label> User id </label>
+                            <label id="editId"> userid</label>
+                            <br/>
+                            <label> Enter name</label>
+                            <input type="text" name="username"
+                                   id="editUsername"/>
+                            <br/>
+                            <label> Enter lastname</label>
+                            <input type="text" name="lastName"
+                                   id="editLastname"/>
+                            <br/>
+                            <label> Enter passport</label>
+                            <input type="text" name="password"
+                                   id="editPassword"/>
+                            <br/>
+                            <label> Select roles</label>
+                            <div>
+                                <div>
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="checkbox">
+                                        <label class="form-check-label">
+                                            USER checkbox
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="checkbox">
+                                        <label class="form-check-label">
+                                            ADMIN checkbox
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                        </div>
+                    </div>
+                    <br/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Close
+                    </button>
+                    <button type="submit" value="Update User"
+                            class="btn btn-primary">Save changes
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -109,8 +317,9 @@
             $("#username").text(user.username);
             $("#userId").text(user.id);
             $("#userUsername").text(user.username);
+            $("#userLastname").text(user.lastName);
             $("#userPassword").text(user.password);
-            if (user.authorities.length>1) {
+            if (user.authorities.length > 1) {
                 $("#userRoles").text(user.authorities[0].authority + " " + user.authorities[1].authority);
                 $("#userAuthorities").text(user.authorities[0].authority + " " + user.authorities[1].authority);
                 $("#navForAdmin").show();
@@ -123,26 +332,151 @@
             alert("Ошибка HTTP: " + response.status);
         }
     }
+
     userDataGet();
     let id = 1;
-    async function getSelectedUserData(id){
+
+    async function getSelectedUserData(id) {
         console.log(id);
-        let url = 'http://localhost:8081/api/user/'+id;
+        let url = 'http://localhost:8081/api/user/' + id;
         let response = await fetch(url);
         let user;
         if (response.ok) {
             user = await response.json();
             $("#title").text(user.username);
+            $("#username").text(user.username);
+            if (user.authorities.length > 1) {
+                $("#userAuthorities").text(user.authorities[0].authority + " " + user.authorities[1].authority);
+                $("#navForAdmin").show();
+            } else {
+                $("#userAuthorities").text(user.authorities[0].authority);
+                $("#navForAdmin").hide();
+            }
         }
     }
-    let i=1;
-    while (i<3){
-        let j = '#but_test'+i;
-        $('j').click(function (){
-            getSelectedUserData(i);
-        })
-        i++;
+
+    async function getDeleteUSerData(id) {
+        console.log(id);
+        let url = 'http://localhost:8081/api/user/' + id;
+        let response = await fetch(url);
+        let user;
+        if (response.ok) {
+            user = await response.json();
+            $("#deleteId").text(user.id);
+            $("#deleteUsername").text(user.username);
+            $("#deleteLastname").text(user.lastName);
+            $("#deletePassword").text(user.password);
+            if (user.authorities.length > 1) {
+                $("#deleteAuthorities").text(user.authorities[0].authority + " " + user.authorities[1].authority);
+            } else {
+                $("#deleteAuthorities").text(user.authorities[0].authority);
+            }
+        }
     }
+
+    async function deleteUser(id) {
+        console.log(id);
+        $.ajaxSetup({
+            headers:
+                { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        });
+        let urlComp = 'http://localhost:8081/api/delete/' + id;
+        let request;
+        request = $.ajax({
+            url: urlComp,
+            method: "DELETE",
+        });
+        request.done(function() {
+            $('#navForAdmin').click();
+        });
+    }
+
+    async function getEditUSerData(id) {
+        console.log(id);
+        let url = 'http://localhost:8081/api/user/' + id;
+        let response = await fetch(url);
+        let user;
+        if (response.ok) {
+            user = await response.json();
+            $("#editId").text(user.id);
+            $("#editUsername").val(user.username);
+            $("#editLastname").val(user.lastName);
+            $("#editPassword").val(user.password);
+        }
+    }
+
+    async function getAdminData() {
+        let url = 'http://localhost:8081/api/users';
+        let response = await fetch(url);
+        let users;
+        if (response.ok) {
+            users = await response.text();
+            let parsed = JSON.parse(users);
+            $("#admin-users-table").empty();
+            parsed.forEach((element) => {
+                let id = element.id;
+                let editId = 'button_edit' + id;
+                let deleteId = 'button_delete' + id;
+                let authorities;
+                if (element.authorities.length > 1) {
+                    authorities = element.authorities[0].authority + " " + element.authorities[1].authority;
+                } else {
+                    authorities = element.authorities[0].authority;
+                }
+                $("#admin-users-table").append($('<tr>')
+                    .append($('<th>').append(element.id))
+                    .append($('<th>').append(element.username))
+                    .append($('<th>').append(element.lastName))
+                    .append($('<th>').append(element.password))
+                    .append($('<th>').append(authorities))
+                    .append($('<th>').append('<button type="button" class="btn btn-info" id="' + editId + '">Edit</button>'))
+                    .append($('<th>').append('<button type="button" class="btn btn-danger" id="' + deleteId + '">Delete</button>'))
+                );
+            });
+            $('[id^=button_delete]').click(function () {
+                let name = this.id;
+                let id = name.substring(13);
+                $('#deleteModal').modal('show');
+                getDeleteUSerData(id);
+            });
+            $('[id^=button_edit]').click(function () {
+                let name = this.id;
+                let id = name.substring(11);
+                $('#editModal').modal('show');
+                getEditUSerData(id);
+            });
+        }
+    }
+
+    $('#navForAdmin').click(function () {
+        getAdminData();
+    })
+
+    $('[id^=but_test]').click(function () {
+        console.log(this.id);
+        let name = this.id;
+        let id = name.substring(8);
+        getSelectedUserData(id);
+    });
+    $('[id^=button_delete]').click(function () {
+        let name = this.id;
+        let id = name.substring(13);
+        $('#deleteModal').modal('show');
+        getDeleteUSerData(id);
+    });
+
+    $('#delete-submit').click(function () {
+        let id = $('#deleteId').text();
+        deleteUser(id);
+    })
+
+    $('[id^=button_edit]').click(function () {
+        let name = this.id;
+        let id = name.substring(11);
+        $('#editModal').modal('show');
+        getEditUSerData(id);
+    });
+
 
 </script>
 </body>

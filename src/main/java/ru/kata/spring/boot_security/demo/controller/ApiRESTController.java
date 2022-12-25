@@ -3,9 +3,7 @@ package ru.kata.spring.boot_security.demo.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.servise.RoleService;
 import ru.kata.spring.boot_security.demo.servise.UserService;
@@ -30,8 +28,8 @@ public class ApiRESTController {
     @RequestMapping("/user")
     public ResponseEntity<UserForView> authenticatedUser(Principal principal) {
         User user = userService.findByName(principal.getName());
-        Collection<? extends GrantedAuthority> authorities=  user.getAuthorities();
-        UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(),  user.getLastName(), authorities);
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+        UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(), user.getLastName(), authorities);
         user1.setId(user.getId());
         return ResponseEntity.ok(user1);
     }
@@ -40,8 +38,8 @@ public class ApiRESTController {
     public ResponseEntity<List<UserForView>> usersList() {
         List<UserForView> response = new ArrayList<>();
         userService.findAll().forEach(user -> {
-            Collection<? extends GrantedAuthority> authorities=  user.getAuthorities();
-            UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(),  user.getLastName(), authorities);
+            Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+            UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(), user.getLastName(), authorities);
             user1.setId(user.getId());
             response.add(user1);
         });
@@ -51,12 +49,58 @@ public class ApiRESTController {
     @RequestMapping("/user/{id}")
     public ResponseEntity<UserForView> showUser(@PathVariable("id") long id) {
         User user = userService.findById(id);
-        Collection<? extends GrantedAuthority> authorities=  user.getAuthorities();
-        UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(),  user.getLastName(), authorities);
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+        UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(), user.getLastName(), authorities);
         user1.setId(user.getId());
         return ResponseEntity.ok(user1);
     }
 
+    @PostMapping("/new")
+    public ResponseEntity<Boolean> newUser(@ModelAttribute("user") UserForView user) {
+        try {
+            User userWithRoles = new User(user.password, user.username, user.lastName);
+            user.authorities.forEach(from -> {
+                roleService.findAll().forEach(role -> {
+                    if (role.getAuthority().equals(from.getAuthority())) {
+                        userWithRoles.setRole(role);
+                    }
+                });
+            });
+            userService.save(userWithRoles);
+            return ResponseEntity.ok(true);
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok(false);
+        }
+    }
+
+    @PatchMapping("/edit/{id}")
+    public ResponseEntity<Boolean> editUser(@PathVariable("id") long id, @ModelAttribute("user") UserForView user) {
+        try {
+            User userWithRoles = new User(user.password, user.username, user.lastName);
+            userWithRoles.setId(user.getId());
+            user.authorities.forEach(from -> {
+                roleService.findAll().forEach(role -> {
+                    if (role.getAuthority().equals(from.getAuthority())) {
+                        userWithRoles.setRole(role);
+                    }
+                });
+            });
+            userService.save(userWithRoles);
+            return ResponseEntity.ok(true);
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok(false);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Boolean> deleteUser(@PathVariable("id") long id) {
+        try {
+            userService.delete(id);
+            return ResponseEntity.ok(true);
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok(false);
+        }
+    }
 
     private class UserForView {
         private long id;
