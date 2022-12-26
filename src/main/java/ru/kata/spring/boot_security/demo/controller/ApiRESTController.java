@@ -31,6 +31,7 @@ public class ApiRESTController {
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
         UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(), user.getLastName(), authorities);
         user1.setId(user.getId());
+        System.out.println(user1.getId() + " get");
         return ResponseEntity.ok(user1);
     }
 
@@ -56,7 +57,7 @@ public class ApiRESTController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Boolean> newUser(@ModelAttribute("user") UserForView user) {
+    public ResponseEntity<?> newUser(@RequestBody UserForView user) {
         try {
             User userWithRoles = new User(user.password, user.username, user.lastName);
             user.authorities.forEach(from -> {
@@ -93,13 +94,9 @@ public class ApiRESTController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteUser(@PathVariable("id") long id) {
-        try {
-            userService.delete(id);
-            return ResponseEntity.ok(true);
-        } catch (RuntimeException e) {
-            return ResponseEntity.ok(false);
-        }
+    public void deleteUser(@PathVariable("id") long id) {
+        System.out.println(id + " delete");
+        userService.delete(id);
     }
 
     private class UserForView {
