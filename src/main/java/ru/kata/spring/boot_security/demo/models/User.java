@@ -19,7 +19,6 @@ public class User implements UserDetails {
     private String password;
 
 
-
     @ManyToMany(fetch = FetchType.LAZY)//(cascade = CascadeType.ALL)
     private Set<Role> role = new HashSet<>();
 
@@ -88,7 +87,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRole().stream().map(a-> new SimpleGrantedAuthority(a.getAuthority())).collect(Collectors.toList());
+        return getRole().stream().map(a -> new SimpleGrantedAuthority(a.getAuthority())).collect(Collectors.toList());
     }
 
     public String getPassword() {

@@ -113,7 +113,8 @@ public class ApiRESTController {
         private String lastName;
         private static Collection<? extends MyGrantedAuthority> authorities;
 
-        public UserForView(){}
+        public UserForView() {
+        }
 
         public UserForView(String username, String password, String lastName, Collection<? extends MyGrantedAuthority> authorities) {
             this.username = username;
@@ -121,8 +122,9 @@ public class ApiRESTController {
             this.lastName = lastName;
             UserForView.authorities = authorities;
         }
+
         public UserForView(long id, String username, String password, String lastName, Collection<? extends MyGrantedAuthority> authorities) {
-            this(username,password,lastName,authorities);
+            this(username, password, lastName, authorities);
             this.id = id;
         }
 
@@ -170,7 +172,8 @@ public class ApiRESTController {
     public static class MyGrantedAuthority implements GrantedAuthority {
         private String authority;
 
-        public MyGrantedAuthority(){}
+        public MyGrantedAuthority() {
+        }
 
         public void setAuthority(String string) {
             this.authority = string;
