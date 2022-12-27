@@ -10,6 +10,7 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.servise.RoleService;
 import ru.kata.spring.boot_security.demo.servise.UserService;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,7 @@ public class ApiRESTController {
     public ResponseEntity<UserForView> authenticatedUser(Principal principal) {
         User user = userService.findByName(principal.getName());
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-        UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(), user.getLastName(), authorities);
+        UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(), user.getLastName(), (Collection<? extends MyGrantedAuthority>) authorities);
         user1.setId(user.getId());
         System.out.println(user1.getId() + " get");
         return ResponseEntity.ok(user1);
@@ -42,7 +43,7 @@ public class ApiRESTController {
         List<UserForView> response = new ArrayList<>();
         userService.findAll().forEach(user -> {
             Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-            UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(), user.getLastName(), authorities);
+            UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(), user.getLastName(), (Collection<? extends MyGrantedAuthority>) authorities);
             user1.setId(user.getId());
             response.add(user1);
         });
@@ -53,7 +54,7 @@ public class ApiRESTController {
     public ResponseEntity<UserForView> showUser(@PathVariable("id") long id) {
         User user = userService.findById(id);
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-        UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(), user.getLastName(), authorities);
+        UserForView user1 = new UserForView(user.getId(), user.getUsername(), user.getPassword(), user.getLastName(), (Collection<? extends MyGrantedAuthority>) authorities);
         user1.setId(user.getId());
         return ResponseEntity.ok(user1);
     }
@@ -62,7 +63,7 @@ public class ApiRESTController {
     public ResponseEntity<?> newUser(@RequestBody UserForView user) {
         try {
             User userWithRoles = new User(user.password, user.username, user.lastName);
-            user.authorities.forEach(from -> {
+            UserForView.authorities.forEach(from -> {
                 roleService.findAll().forEach(role -> {
                     if (role.getAuthority().equals(from.getAuthority())) {
                         userWithRoles.setRole(role);
@@ -76,12 +77,15 @@ public class ApiRESTController {
         }
     }
 
-    @PatchMapping("/edit/{id}")
-    public ResponseEntity<Boolean> editUser(@PathVariable("id") long id, @ModelAttribute("user") UserForView user) {
+    @PatchMapping("/edit")
+    public ResponseEntity<?> editUser(@RequestBody UserForView user) {
         try {
-            User userWithRoles = new User(user.password, user.username, user.lastName);
-            userWithRoles.setId(user.getId());
-            user.authorities.forEach(from -> {
+            System.out.println(user.id + " " + user.username + " " + user.password + " " + user.lastName);
+            User userWithRoles = userService.findById(user.id);
+            userWithRoles.setPassword(user.password);
+            userWithRoles.setUsername(user.username);
+            userWithRoles.setLastName(user.lastName);
+            UserForView.authorities.forEach(from -> {
                 roleService.findAll().forEach(role -> {
                     if (role.getAuthority().equals(from.getAuthority())) {
                         userWithRoles.setRole(role);
@@ -91,6 +95,7 @@ public class ApiRESTController {
             userService.save(userWithRoles);
             return ResponseEntity.ok(true);
         } catch (RuntimeException e) {
+            System.out.println("error");
             return ResponseEntity.ok(false);
         }
     }
@@ -101,22 +106,22 @@ public class ApiRESTController {
         userService.delete(id);
     }
 
-    private class UserForView {
+    private static class UserForView {
         private long id;
         private String username;
         private String password;
         private String lastName;
-        private Collection<? extends GrantedAuthority> authorities;
+        private static Collection<? extends MyGrantedAuthority> authorities;
 
         public UserForView(){}
 
-        public UserForView(String username, String password, String lastName, Collection<? extends GrantedAuthority> authorities) {
+        public UserForView(String username, String password, String lastName, Collection<? extends MyGrantedAuthority> authorities) {
             this.username = username;
             this.password = password;
             this.lastName = lastName;
-            this.authorities = authorities;
+            UserForView.authorities = authorities;
         }
-        public UserForView(long id, String username, String password, String lastName, Collection<? extends GrantedAuthority> authorities) {
+        public UserForView(long id, String username, String password, String lastName, Collection<? extends MyGrantedAuthority> authorities) {
             this(username,password,lastName,authorities);
             this.id = id;
         }
@@ -157,8 +162,23 @@ public class ApiRESTController {
             return authorities;
         }
 
-        public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        public void setAuthorities(Collection<? extends MyGrantedAuthority> authorities) {
             this.authorities = authorities;
+        }
+    }
+
+    public static class MyGrantedAuthority implements GrantedAuthority {
+        private String authority;
+
+        public MyGrantedAuthority(){}
+
+        public void setAuthority(String string) {
+            this.authority = string;
+        }
+
+        @Override
+        public String getAuthority() {
+            return authority;
         }
     }
 }

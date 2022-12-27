@@ -152,7 +152,9 @@
                                                         </div>
                                                     </div>
                                                     <br/>
-                                                    <button type="button" class="btn btn-success" id="new-user-submit">Add user</button>
+                                                    <button type="button" class="btn btn-success" id="new-user-submit">
+                                                        Add user
+                                                    </button>
                                                 </div>
                                             </form>
                                         </div>
@@ -264,14 +266,14 @@
                                 <div>
                                     <div class="form-check">
                                         <input class="form-check-input"
-                                               type="checkbox">
+                                               type="checkbox" id="edit-user-check">
                                         <label class="form-check-label">
                                             USER checkbox
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input"
-                                               type="checkbox">
+                                               type="checkbox" id="edit-admin-check">
                                         <label class="form-check-label">
                                             ADMIN checkbox
                                         </label>
@@ -288,7 +290,7 @@
                             data-dismiss="modal">Close
                     </button>
                     <button type="button" data-dismiss="modal"
-                            class="btn btn-primary">Save changes
+                            class="btn btn-primary" id="edit-confirm">Save changes
                     </button>
                 </div>
             </div>
@@ -408,14 +410,23 @@
         let url = 'http://localhost:8081/api/new';
         console.log(user.username);
         console.log(user);
-        let token = $("meta[name='_csrf']").attr("content");
         await fetch(url, {
             method: 'POST',
-            headers: {
-                'contentType': "application/json; charset=utf-8"
-            },
+            headers: new Headers({'content-type': 'application/json'}),
             body: JSON.stringify(user)
         });
+    }
+
+    async function editUser(user) {
+        let url = 'http://localhost:8081/api/edit';
+        console.log(user.username);
+        console.log(user);
+        await fetch(url, {
+            method: 'PATCH',
+            headers: new Headers({'content-type': 'application/json'}),
+            body: JSON.stringify(user)
+        });
+        $('#navForAdmin').click();
     }
 
     async function getEditUSerData(id) {
@@ -496,6 +507,7 @@
     $('#delete-submit').click(function () {
         let id = $('#deleteId').text();
         deleteUser(id);
+        $('#navForAdmin').click();
     })
 
     $('[id^=button_edit]').click(function () {
@@ -505,26 +517,50 @@
         getEditUSerData(id);
     });
 
-    $('#new-user-submit').click(function (){
+    $('#new-user-submit').click(function () {
         let username = $("#name").val();
         let lastname = $("#lastName").val();
         let password = $("#password").val();
         let authorities;
-        if($("#userCheck").is(':checked')) {
-            if($("#adminCheck").is(':checked')) {
-                authorities = '[{"authority":"USER"},{"authority":"ADMIN"}]';
+        if ($("#userCheck").is(':checked')) {
+            if ($("#adminCheck").is(':checked')) {
+                authorities = [{authority: 'USER'}, {authority: 'ADMIN'}];
             } else {
-                authorities = '[{"authority":"USER"}]';
+                authorities = [{authority: 'USER'}];
             }
         } else {
-            if($("#adminCheck").is(':checked')) {
-                authorities = '[{"authority":"ADMIN"}]';
+            if ($("#adminCheck").is(':checked')) {
+                authorities = [{authority: 'ADMIN'}];
             }
         }
-        let user = '{"username":' + username + ',"password":' + password + ',"lastName":' + lastname + ',"authorities":' + authorities + '}';
+        let user = {username: username, password: password, lastName: lastname, authorities: authorities};
         newUser(user);
+        $('#navForAdmin').click();
+        $('#nav-home-tab').tab('show');
     })
 
+    $('#edit-confirm').click(function () {
+        let id = $("#editId").text();
+        let username = $("#editUsername").val();
+        let lastname = $("#editLastname").val();
+        let password = $("#editPassword").val();
+        let authorities;
+        if ($("#edit-user-check").is(':checked')) {
+            if ($("#edit-admin-check").is(':checked')) {
+                authorities = [{authority: 'USER'}, {authority: 'ADMIN'}];
+            } else {
+                authorities = [{authority: 'USER'}];
+            }
+        } else {
+            if ($("#edit-admin-check").is(':checked')) {
+                authorities = [{authority: 'ADMIN'}];
+            }
+        }
+        let user = {id: id, username: username, password: password, lastName: lastname, authorities: authorities};
+        editUser(user);
+        $('#navForAdmin').click();
+
+    })
 
 </script>
 </body>
