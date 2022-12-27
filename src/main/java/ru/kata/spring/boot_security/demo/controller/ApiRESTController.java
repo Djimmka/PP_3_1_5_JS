@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.apache.tomcat.util.json.JSONParser;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -106,12 +108,17 @@ public class ApiRESTController {
         private String lastName;
         private Collection<? extends GrantedAuthority> authorities;
 
-        public UserForView(long id, String username, String password, String lastName, Collection<? extends GrantedAuthority> authorities) {
-            this.id = id;
+        public UserForView(){}
+
+        public UserForView(String username, String password, String lastName, Collection<? extends GrantedAuthority> authorities) {
             this.username = username;
             this.password = password;
             this.lastName = lastName;
             this.authorities = authorities;
+        }
+        public UserForView(long id, String username, String password, String lastName, Collection<? extends GrantedAuthority> authorities) {
+            this(username,password,lastName,authorities);
+            this.id = id;
         }
 
         public long getId() {

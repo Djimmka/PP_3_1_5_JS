@@ -152,7 +152,7 @@
                                                         </div>
                                                     </div>
                                                     <br/>
-                                                    <input type="submit" value="Add User" id="new-user-submit"/>
+                                                    <button type="button" class="btn btn-success" id="new-user-submit">Add user</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -399,7 +399,6 @@
         const csrfToken2 = getCookie('CSRF-TOKEN');
         await fetch(url, {
             method: 'DELETE',
-            body: { url},
             headers: {header: token}
         });
         $('#navForAdmin').click();
@@ -408,13 +407,15 @@
     async function newUser(user) {
         let url = 'http://localhost:8081/api/new';
         console.log(user.username);
+        console.log(user);
         let token = $("meta[name='_csrf']").attr("content");
         await fetch(url, {
             method: 'POST',
-            body: {user},
-            headers: {header: token}
+            headers: {
+                'contentType': "application/json; charset=utf-8"
+            },
+            body: JSON.stringify(user)
         });
-        $('#navForAdmin').click();
     }
 
     async function getEditUSerData(id) {
@@ -505,9 +506,9 @@
     });
 
     $('#new-user-submit').click(function (){
-        let username = $("#name").text();
-        let lastname = $("#lastName").text();
-        let password = $("#password").text();
+        let username = $("#name").val();
+        let lastname = $("#lastName").val();
+        let password = $("#password").val();
         let authorities;
         if($("#userCheck").is(':checked')) {
             if($("#adminCheck").is(':checked')) {
